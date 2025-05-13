@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAero Desktop - 简约设置</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 0 16px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+        }
+        .app-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            background-color: #1a73e8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .app-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #666;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .menu-item:hover {
+            background-color: #e6e6e6;
+        }
+        .menu-item.active {
+            background-color: #e3f2fd;
+            color: #1a73e8;
+            border-left-color: #1a73e8;
+        }
+        .menu-icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        .menu-label {
+            font-size: 14px;
+        }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .content-wrapper {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .settings-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+        .settings-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+        .option-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .option-label {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .option-description {
+            font-size: 14px;
+            color: #757575;
+        }
+        .option-control select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+            background-color: white;
+            min-width: 150px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #1a73e8;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .color-options {
+            display: flex;
+            gap: 8px;
+        }
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .color-option.active {
+            border-color: #1a73e8;
+        }
+        .blue-theme {
+            background: linear-gradient(135deg, #42b0ff 0%, #1a73e8 100%);
+        }
+        .green-theme {
+            background: linear-gradient(135deg, #42d77d 0%, #1db954 100%);
+        }
+        .purple-theme {
+            background: linear-gradient(135deg, #b388ff 0%, #7c4dff 100%);
+        }
+        .red-theme {
+            background: linear-gradient(135deg, #ff8a80 0%, #ff5252 100%);
+        }
+        .save-button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 24px;
+        }
+        .save-button i {
+            margin-right: 8px;
+        }
+        .system-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            margin-right: 8px;
+        }
+        .system-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .control-close {
+            background-color: #ff5f57;
+        }
+        .control-minimize {
+            background-color: #ffbd2e;
+        }
+        .control-maximize {
+            background-color: #28c941;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">Q</div>
+                <div class="app-name">QAero</div>
+                <div class="system-controls">
+                    <div class="system-control control-close"></div>
+                    <div class="system-control control-minimize"></div>
+                    <div class="system-control control-maximize"></div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-home"></i></div>
+                    <div class="menu-label">首页</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-search"></i></div>
+                    <div class="menu-label">搜索</div>
+                </div>
+                <div class="menu-item active">
+                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
+                    <div class="menu-label">设置</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航 -->
+            <div class="app-header">
+                <div class="page-title">设置和偏好</div>
+                
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">
+                    <i class="fas fa-save mr-2"></i>保存设置
+                </button>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="content-wrapper">
+                <!-- 常规设置 -->
+                <div class="settings-section">
+                    <div class="settings-section-title">常规设置</div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">语言</div>
+                            <div class="option-description">选择应用界面语言</div>
+                        </div>
+                        <div class="option-control">
+                            <select>
+                                <option selected>简体中文</option>
+                                <option>English</option>
+                                <option>日本語</option>
+                                <option>Español</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">温度单位</div>
+                            <div class="option-description">选择温度显示单位</div>
+                        </div>
+                        <div class="option-control">
+                            <select>
+                                <option selected>摄氏度 (°C)</option>
+                                <option>华氏度 (°F)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">自动检测位置</div>
+                            <div class="option-description">使用当前位置作为默认位置</div>
+                        </div>
+                        <div class="option-control">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 通知设置 -->
+                <div class="settings-section">
+                    <div class="settings-section-title">通知设置</div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">每日通知</div>
+                            <div class="option-description">每天接收空气质量摘要</div>
+                        </div>
+                        <div class="option-control">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">空气质量警报</div>
+                            <div class="option-description">AQI超过设定值时发送警报</div>
+                        </div>
+                        <div class="option-control">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">警报阈值</div>
+                            <div class="option-description">设置触发警报的AQI值</div>
+                        </div>
+                        <div class="option-control">
+                            <select>
+                                <option>100 (中等)</option>
+                                <option selected>150 (对敏感人群不健康)</option>
+                                <option>200 (不健康)</option>
+                                <option>300 (非常不健康)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 小部件设置 -->
+                <div class="settings-section">
+                    <div class="settings-section-title">桌面小部件设置</div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">显示桌面小部件</div>
+                            <div class="option-description">在Windows桌面显示空气质量小部件</div>
+                        </div>
+                        <div class="option-control">
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">小部件颜色</div>
+                            <div class="option-description">选择桌面小部件颜色主题</div>
+                        </div>
+                        <div class="option-control">
+                            <div class="color-options">
+                                <div class="color-option blue-theme active"></div>
+                                <div class="color-option green-theme"></div>
+                                <div class="color-option purple-theme"></div>
+                                <div class="color-option red-theme"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-option">
+                        <div class="option-info">
+                            <div class="option-label">刷新频率</div>
+                            <div class="option-description">小部件数据更新频率</div>
+                        </div>
+                        <div class="option-control">
+                            <select>
+                                <option>10分钟</option>
+                                <option selected>30分钟</option>
+                                <option>1小时</option>
+                                <option>3小时</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

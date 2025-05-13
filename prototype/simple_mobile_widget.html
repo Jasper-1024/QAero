@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAero - 简约小部件</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .status-bar {
+            background-color: #1a73e8;
+            color: white;
+            padding: 4px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .status-bar-icons {
+            display: flex;
+            gap: 8px;
+        }
+        .bottom-nav {
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 8px 0;
+            justify-content: space-around;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #757575;
+        }
+        .nav-item.active {
+            color: #1a73e8;
+        }
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .page-header {
+            background-color: white;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        .back-button {
+            margin-right: 16px;
+        }
+        .widget-preview-section {
+            padding: 16px;
+        }
+        .widget-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #757575;
+        }
+        .widget-preview {
+            background-color: #333;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        .widget-container {
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .widget-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .widget-section-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .color-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .color-option.active {
+            border-color: #1a73e8;
+        }
+        .blue-theme {
+            background: linear-gradient(135deg, #42b0ff 0%, #1a73e8 100%);
+        }
+        .green-theme {
+            background: linear-gradient(135deg, #42d77d 0%, #1db954 100%);
+        }
+        .purple-theme {
+            background: linear-gradient(135deg, #b388ff 0%, #7c4dff 100%);
+        }
+        .red-theme {
+            background: linear-gradient(135deg, #ff8a80 0%, #ff5252 100%);
+        }
+        .widget-medium {
+            height: 120px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #42b0ff 0%, #1a73e8 100%);
+        }
+        .widget-aqi {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin-right: 16px;
+        }
+        .widget-info {
+            flex: 1;
+        }
+        .widget-city {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .widget-label {
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #1a73e8;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div>09:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="pb-24">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <div class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <h1 class="text-xl font-semibold">小部件配置</h1>
+        </div>
+        
+        <!-- 小部件预览 -->
+        <div class="widget-preview-section">
+            <div class="widget-title">预览</div>
+            <div class="widget-preview">
+                <div class="widget-container widget-medium">
+                    <div class="widget-aqi">75</div>
+                    <div class="widget-info">
+                        <div class="widget-city">北京, 中国</div>
+                        <div class="widget-label">空气质量指数 · 中等</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 小部件设置 -->
+        <div class="px-4">
+            <!-- 颜色主题 -->
+            <div class="widget-section">
+                <div class="widget-section-title">颜色主题</div>
+                <div class="color-options">
+                    <div class="color-option blue-theme active"></div>
+                    <div class="color-option green-theme"></div>
+                    <div class="color-option purple-theme"></div>
+                    <div class="color-option red-theme"></div>
+                </div>
+            </div>
+            
+            <!-- 显示内容 -->
+            <div class="widget-section">
+                <div class="widget-section-title">显示内容</div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>AQI数值</div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>城市名称</div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div>空气质量状态</div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 更新频率 -->
+            <div class="widget-section">
+                <div class="widget-section-title">更新频率</div>
+                <select class="w-full p-2 border border-gray-300 rounded-md">
+                    <option>10分钟</option>
+                    <option selected>30分钟</option>
+                    <option>1小时</option>
+                    <option>3小时</option>
+                </select>
+            </div>
+            
+            <!-- 应用按钮 -->
+            <button class="w-full bg-blue-500 text-white py-3 rounded-lg font-medium my-8">
+                保存小部件设置
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <i class="nav-icon fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item">
+            <i class="nav-icon fas fa-search"></i>
+            <span>搜索</span>
+        </div>
+        <div class="nav-item active">
+            <i class="nav-icon fas fa-cog"></i>
+            <span>设置</span>
+        </div>
+    </div>
+</body>
+</html>

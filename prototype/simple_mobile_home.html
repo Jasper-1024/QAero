@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAero - 简约首页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .status-bar {
+            background-color: #1a73e8;
+            color: white;
+            padding: 4px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .status-bar-icons {
+            display: flex;
+            gap: 8px;
+        }
+        .aqi-card {
+            background: linear-gradient(135deg, #42b883 0%, #1a73e8 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.2);
+        }
+        .aqi-value {
+            font-size: 80px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 1;
+        }
+        .aqi-label {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .aqi-description {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 4px 12px;
+            margin-top: 12px;
+            display: inline-block;
+        }
+        .bottom-nav {
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 8px 0;
+            justify-content: space-around;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #757575;
+        }
+        .nav-item.active {
+            color: #1a73e8;
+        }
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .pollutant-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .pollutant-title {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 4px;
+        }
+        .pollutant-value {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div>09:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <div class="p-4 pb-24">
+        <!-- 位置和刷新 -->
+        <div class="flex justify-between items-center mb-6 mt-2">
+            <div class="flex items-center">
+                <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+                <span class="font-semibold">北京, 中国</span>
+            </div>
+            <button class="p-2 rounded-full bg-gray-100">
+                <i class="fas fa-sync-alt text-gray-600"></i>
+            </button>
+        </div>
+        
+        <!-- AQI卡片 -->
+        <div class="aqi-card mb-6">
+            <div class="aqi-value">75</div>
+            <div class="aqi-label">空气质量指数</div>
+            <div class="flex justify-center mt-2">
+                <div class="aqi-description">中等</div>
+            </div>
+            <div class="text-center mt-3 text-sm">上次更新: 11:24 CST</div>
+        </div>
+        
+        <!-- 主要污染物 -->
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-3">主要污染物</h3>
+            <div class="info-grid">
+                <div class="pollutant-card">
+                    <div class="pollutant-title">PM2.5</div>
+                    <div class="pollutant-value">42</div>
+                </div>
+                <div class="pollutant-card">
+                    <div class="pollutant-title">PM10</div>
+                    <div class="pollutant-value">65</div>
+                </div>
+                <div class="pollutant-card">
+                    <div class="pollutant-title">O₃</div>
+                    <div class="pollutant-value">28</div>
+                </div>
+                <div class="pollutant-card">
+                    <div class="pollutant-title">NO₂</div>
+                    <div class="pollutant-value">15</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 健康建议 -->
+        <div class="bg-white rounded-lg p-4 shadow-sm">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-heartbeat text-red-500 mr-2"></i>
+                <h3 class="text-lg font-semibold">健康建议</h3>
+            </div>
+            <p class="text-sm text-gray-600">
+                空气质量可接受，但对特别敏感的人群可能有轻微影响。敏感人群应考虑减少户外活动。
+            </p>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="nav-icon fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="nav-item">
+            <i class="nav-icon fas fa-search"></i>
+            <span>搜索</span>
+        </div>
+        <div class="nav-item">
+            <i class="nav-icon fas fa-cog"></i>
+            <span>设置</span>
+        </div>
+    </div>
+</body>
+</html>

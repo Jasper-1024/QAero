@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAero Desktop - 简约主页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 220px;
+            background-color: #f0f0f0;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+        }
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            padding: 0 16px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 16px;
+        }
+        .app-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            background-color: #1a73e8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .app-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .sidebar-menu {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #666;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .menu-item:hover {
+            background-color: #e6e6e6;
+        }
+        .menu-item.active {
+            background-color: #e3f2fd;
+            color: #1a73e8;
+            border-left-color: #1a73e8;
+        }
+        .menu-icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        .menu-label {
+            font-size: 14px;
+        }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .header-search {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 24px;
+            padding: 8px 16px;
+            width: 300px;
+        }
+        .search-icon {
+            color: #757575;
+            margin-right: 8px;
+        }
+        .search-input {
+            border: none;
+            background-color: transparent;
+            flex: 1;
+            outline: none;
+            font-size: 14px;
+        }
+        .content-wrapper {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        .dashboard-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .main-card {
+            display: flex;
+            padding: 24px;
+        }
+        .aqi-display {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #42b883 0%, #1a73e8 100%);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 24px;
+        }
+        .aqi-value {
+            font-size: 72px;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .aqi-label {
+            font-size: 16px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .aqi-status {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 4px 16px;
+            border-radius: 16px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .card-content {
+            flex: 1;
+        }
+        .card-header {
+            margin-bottom: 16px;
+        }
+        .location-name {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        .location-icon {
+            color: #f44336;
+            margin-right: 8px;
+        }
+        .update-time {
+            color: #757575;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .pollutants-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .pollutant-item {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .pollutant-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pollutant-name {
+            font-size: 14px;
+            color: #757575;
+        }
+        .sidebar-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-card-header {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .sidebar-card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .cities-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .city-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .city-item:last-child {
+            border-bottom: none;
+        }
+        .city-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .city-aqi {
+            font-size: 14px;
+            font-weight: 600;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .add-city {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            color: #1a73e8;
+            font-size: 14px;
+            cursor: pointer;
+            border-top: 1px solid #f0f0f0;
+        }
+        .add-city i {
+            margin-right: 8px;
+        }
+        .chart-card {
+            margin-top: 24px;
+            padding: 16px;
+        }
+        .chart-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .aqi-good {
+            background-color: #4caf50;
+        }
+        .aqi-moderate {
+            background-color: #ff9800;
+        }
+        .aqi-unhealthy {
+            background-color: #f44336;
+        }
+        .system-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            margin-right: 8px;
+        }
+        .system-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .control-close {
+            background-color: #ff5f57;
+        }
+        .control-minimize {
+            background-color: #ffbd2e;
+        }
+        .control-maximize {
+            background-color: #28c941;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-logo">Q</div>
+                <div class="app-name">QAero</div>
+                <div class="system-controls">
+                    <div class="system-control control-close"></div>
+                    <div class="system-control control-minimize"></div>
+                    <div class="system-control control-maximize"></div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-item active">
+                    <div class="menu-icon"><i class="fas fa-home"></i></div>
+                    <div class="menu-label">首页</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-search"></i></div>
+                    <div class="menu-label">搜索</div>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon"><i class="fas fa-cog"></i></div>
+                    <div class="menu-label">设置</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航 -->
+            <div class="app-header">
+                <div class="header-search">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="搜索城市">
+                </div>
+                
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-lg">
+                    <i class="fas fa-sync-alt mr-2"></i>刷新
+                </button>
+            </div>
+            
+            <!-- 内容区域 -->
+            <div class="content-wrapper">
+                <div class="dashboard-grid">
+                    <!-- 主卡片 -->
+                    <div class="dashboard-card main-card">
+                        <div class="aqi-display">
+                            <div class="aqi-value">75</div>
+                            <div class="aqi-label">空气质量指数</div>
+                            <div class="aqi-status">中等</div>
+                        </div>
+                        
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="location-name">
+                                    <i class="fas fa-map-marker-alt location-icon"></i>
+                                    北京, 中国
+                                </div>
+                                <div class="update-time">更新于: 2025年5月11日 11:24 CST</div>
+                            </div>
+                            
+                            <div class="pollutants-grid">
+                                <div class="pollutant-item">
+                                    <div class="pollutant-value">42</div>
+                                    <div class="pollutant-name">PM2.5</div>
+                                </div>
+                                <div class="pollutant-item">
+                                    <div class="pollutant-value">65</div>
+                                    <div class="pollutant-name">PM10</div>
+                                </div>
+                                <div class="pollutant-item">
+                                    <div class="pollutant-value">28</div>
+                                    <div class="pollutant-name">O₃</div>
+                                </div>
+                                <div class="pollutant-item">
+                                    <div class="pollutant-value">15</div>
+                                    <div class="pollutant-name">NO₂</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 侧边收藏城市 -->
+                    <div class="dashboard-card sidebar-card">
+                        <div class="sidebar-card-header">
+                            <div class="sidebar-card-title">收藏城市</div>
+                        </div>
+                        
+                        <div class="cities-list">
+                            <div class="city-item">
+                                <div>
+                                    <div class="city-name">北京, 中国</div>
+                                    <div class="text-xs text-gray-500">更新于: 11:24</div>
+                                </div>
+                                <div class="city-aqi aqi-moderate">75</div>
+                            </div>
+                            
+                            <div class="city-item">
+                                <div>
+                                    <div class="city-name">上海, 中国</div>
+                                    <div class="text-xs text-gray-500">更新于: 11:20</div>
+                                </div>
+                                <div class="city-aqi aqi-good">45</div>
+                            </div>
+                            
+                            <div class="city-item">
+                                <div>
+                                    <div class="city-name">广州, 中国</div>
+                                    <div class="text-xs text-gray-500">更新于: 11:15</div>
+                                </div>
+                                <div class="city-aqi aqi-unhealthy">125</div>
+                            </div>
+                        </div>
+                        
+                        <div class="add-city">
+                            <i class="fas fa-plus"></i>
+                            <span>添加城市</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 图表 -->
+                <div class="dashboard-card chart-card">
+                    <h3>24小时AQI趋势</h3>
+                    <canvas id="aqiChart" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 初始化图表
+        const ctx = document.getElementById('aqiChart').getContext('2d');
+        const aqiChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '现在'],
+                datasets: [{
+                    label: 'AQI值',
+                    data: [65, 58, 45, 53, 70, 85, 92, 88, 75],
+                    backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                    borderColor: '#1a73e8',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#1a73e8',
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 30
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
